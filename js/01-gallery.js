@@ -27,19 +27,34 @@ function createImagesMurkupList(images){
     .join("");
 }
 
-function openImage (event) {
-event.preventDefault();
-if (event.target.nodeName !== 'IMG') {
-    return;
+function openImage(event) {
+  event.preventDefault();
+  if (event.target.nodeName !== 'IMG') {
+      return;
   }
 
- const largeImageUrl = event.target.dataset.source;
+  const largeImageUrl = event.target.dataset.source;
 
- const instance = basicLightbox.create(`
-        <img src="${largeImageUrl}">
-    `);
+  const instance = basicLightbox.create(`
+      <img src="${largeImageUrl}">
+  `);
 
   instance.show();
 
+  const img = instance.element().querySelector('img');
+  img.addEventListener('click', () => {
+      instance.close();
+      document.removeEventListener('keydown', escapeHandler);
+  });
+
+  const escapeHandler = (e) => {
+      if (e.key === 'Escape') {
+          instance.close();
+          document.removeEventListener('keydown', escapeHandler);
+      }
+  };
+
+  document.addEventListener('keydown', escapeHandler);
 }
+
 
